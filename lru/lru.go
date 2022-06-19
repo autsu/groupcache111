@@ -4,21 +4,12 @@ import (
 	"container/list"
 )
 
-type Size int64
-
-const (
-	B  Size = iota + 1
-	KB      = 1 << (10 * iota)
-	MB
-	GB
-)
-
 type LRU struct {
-	maxBytes  int64                          // 最大容量，0 表示无限制
+	maxBytes  int64                         // 最大容量，0 表示无限制
 	OnEvicted func(key string, value Value) // 被淘汰时的回调方法
 	ll        *list.List                    // 双向链表用来实现 LRU
 	cache     map[string]*list.Element      // 快速访问到 list 的节点
-	curBytes  int64                          // 当前占用容量
+	curBytes  int64                         // 当前占用容量
 }
 
 type Value interface {

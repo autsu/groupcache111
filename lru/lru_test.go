@@ -6,10 +6,6 @@ import (
 	"testing"
 )
 
-func TestSize(t *testing.T) {
-	fmt.Println(B, KB, MB, GB)
-}
-
 func printList(l *list.List) {
 	for i := l.Front(); i != nil; i = i.Next() {
 		v := i.Value.(*entry)
@@ -27,7 +23,7 @@ func (s *Str) Len() int64 {
 }
 
 func TestLru(t *testing.T) {
-	lru := New(5*MB, nil)
+	lru := New(5, nil)
 
 	lru.Add("1", &Str{s: "111"})
 	fmt.Printf("[add {1, 111}]  curBytes: %v, maxBytes: %v, len: %v \n",

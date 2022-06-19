@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"go-LRU/lru"
+	"cache/lru"
 	"sync"
 )
 

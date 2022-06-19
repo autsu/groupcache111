@@ -21,7 +21,6 @@ func TestHash(t *testing.T) {
 		fmt.Printf("【虚拟节点】%v 对应【真实节点】%v \n", virtualNode, realNode)
 	}
 
-
 	testCase := map[string]string{
 		"2":  "2",
 		"11": "2",
@@ -34,6 +33,4 @@ func TestHash(t *testing.T) {
 			t.Errorf("Asking for %v, should have yielded %s", k, v)
 		}
 	}
-
-
 }

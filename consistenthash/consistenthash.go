@@ -6,22 +6,19 @@ import (
 	"strconv"
 )
 
-// DefaultReplicas 默认虚拟节点数量
-const DefaultReplicas = 50
-
 // HashFunc 是一个 hash 函数
 type HashFunc func(data []byte) uint32
 
-// HashRing 是一个哈希环
-type HashRing struct {
+// Map 是一个哈希环
+type Map struct {
 	hash     HashFunc          // 自定义 hash 函数
 	replicas int64             // 虚拟节点倍数，即每个真实节点有几个虚拟节点
 	hashMap  map[uint32]string // 虚拟节点与真实节点的映射表，key 是虚拟节点的 hash 值，value 是真实节点的名称
 	nodes    []uint32          // hash 环，保存所有节点的 hash 值
 }
 
-func New(replicas int64, fn HashFunc) *HashRing {
-	m := &HashRing{
+func New(replicas int64, fn HashFunc) *Map {
+	m := &Map{
 		hash:     fn,
 		replicas: replicas,
 		hashMap:  make(map[uint32]string),
@@ -34,7 +31,7 @@ func New(replicas int64, fn HashFunc) *HashRing {
 }
 
 // Add 添加节点到 hash 环
-func (h *HashRing) Add(node ...string) {
+func (h *Map) Add(node ...string) {
 	for _, n := range node {
 		// 为每个节点创建 replicas 个虚拟节点
 		for i := 0; int64(i) < h.replicas; i++ {
@@ -53,7 +50,7 @@ func (h *HashRing) Add(node ...string) {
 }
 
 // Get 会根据 key 来选择一个节点
-func (h *HashRing) Get(key string) string {
+func (h *Map) Get(key string) string {
 	if len(h.nodes) == 0 {
 		return ""
 	}

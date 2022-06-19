@@ -12,7 +12,7 @@ var data = map[string]string{
 }
 
 func TestGroup(t *testing.T) {
-	group := NewGroup("name", 5*MB, GetterFunc(func(key string) ([]byte, error) {
+	group := NewGroup("name", 1024, GetterFunc(func(key string) ([]byte, error) {
 		v := data[key]
 		return []byte(v), nil
 	}))
