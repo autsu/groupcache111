@@ -1,0 +1,19 @@
+$ sh ./testdata.sh
+test.go:75: [api server] listen in: 127.0.0.1:10002
+test.go:75: [api server] listen in: 127.0.0.1:10001
+test.go:75: [api server] listen in: 127.0.0.1:10003
+>>> start server
+http.go:92: [127.0.0.1:10003][GET] /cache/user_cache/Tom
+http.go:92: [127.0.0.1:10001][GET] /cache/user_cache/Tom
+http.go:92: [127.0.0.1:10002][GET] /cache/user_cache/Tom
+group.go:91: [127.0.0.1:10003] -> Redirected to key[Tom] at 127.0.0.1:10002
+group.go:125: [127.0.0.1:10002] get from locally
+group.go:91: [127.0.0.1:10001] -> Redirected to key[Tom] at 127.0.0.1:10002
+
+630http.go:92: [127.0.0.1:10002][GET] /cache/user_cache/Tom
+group.go:76: [127.0.0.1:10002] cache is hit
+http.go:92: [127.0.0.1:10002][GET] /cache/user_cache/Tom
+group.go:76: [127.0.0.1:10002] cache is hit
+
+
+630630

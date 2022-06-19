@@ -129,16 +129,20 @@ func (h *HTTPPool) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *HTTPPool) PickPeer(key string) (peer PeerGetter, ok bool) {
+func (h *HTTPPool) PickPeer(key string) (addr string, peer PeerGetter, notSelf bool) {
 	p := h.peers.Get(key)
 	// 找到了节点且该节点不是当前节点（如果是当前节点，那么就没必要进行 http 调用去远程获取了，
 	// 直接在本地查询即可）
 	if p != "" && p != h.addr {
-		log.Printf("[%v] -> Redirected to key[%v] at %v\n", h.addr, key, p)
+		//log.Printf("[%v] -> Redirected to key[%v] at %v\n", h.addr, key, p)
 		// 在其他节点（机器），获得该节点的 Get 方法，进行 http 调用获取结果
-		return h.httpGetters[p], true
+		return p, h.httpGetters[p], true
 	}
-	return nil, false
+	return p, nil, false
+}
+
+func (h *HTTPPool) Addr() string {
+	return h.addr
 }
 
 func (h *HTTPPool) Set(peers ...string) {
@@ -154,6 +158,7 @@ func (h *HTTPPool) Set(peers ...string) {
 	}
 }
 
+// 默认请求 url 格式为：<scheme>://<host>/<baseURL>/<groupName>/<key>
 type httpGetter struct {
 	scheme  string // http or https
 	host    string

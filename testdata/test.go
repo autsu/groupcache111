@@ -14,21 +14,19 @@ func init() {
 
 var (
 	port = flag.String("p", "", "port")
+	db   = map[string]string{
+		"Tom":  "630",
+		"Jack": "589",
+		"Sam":  "567",
+	}
+	getFunc = cache.GetterFunc(
+		func(key string) ([]byte, error) {
+			if v, ok := db[key]; ok {
+				return []byte(v), nil
+			}
+			return nil, fmt.Errorf("key[%s] is not exist in db", key)
+		})
 )
-
-var db = map[string]string{
-	"Tom":  "630",
-	"Jack": "589",
-	"Sam":  "567",
-}
-
-var getFunc = cache.GetterFunc(
-	func(key string) ([]byte, error) {
-		if v, ok := db[key]; ok {
-			return []byte(v), nil
-		}
-		return nil, fmt.Errorf("%s not exist", key)
-	})
 
 func newGroup(name string, size int64, fn cache.Getter) *cache.Group {
 	return cache.NewGroup(name, size, fn)
@@ -45,33 +43,13 @@ func startCacheServer(host, port string, peersAddr []string, g *cache.Group) err
 	return nil
 }
 
-// 该接口用于获取缓存
-func startApiServer(host, port string, g *cache.Group) error {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		key := r.URL.Query().Get("key")
-		view, err := g.Get(key)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.Header().Set("Content-Type", "application/octet-stream")
-		w.Write(view.ByteSlice())
-	})
-	if err := http.ListenAndServe(fmt.Sprintf("%v:%v", host, port), nil); err != nil {
-		return err
-	}
-	return nil
-}
-
 func main() {
-	//go func() {
-	//	host, port := "localhost", "10000"
-	//	if err := startApiServer(host, port, group); err != nil {
-	//		log.Fatal(err)
-	//	}
-	//	log.Printf("[api server] listen in: %v\n", host+port)
-	//}()
 	flag.Parse()
+	if *port == "" {
+		panic("usage: ./test -p [10001 | 10002 | 10003]")
+	}
+	groupName := "user_cache"
+	groupSize := int64(100)
 
 	type addr struct {
 		host string
@@ -88,7 +66,7 @@ func main() {
 			peersAddr,
 			fmt.Sprintf("%v:%v", addr.host, addr.port))
 	}
-	g := newGroup("user_cache", 100, getFunc)
+	g := newGroup(groupName, groupSize, getFunc)
 	adr, ok := cacheServerAddr[*port]
 	if !ok {
 		log.Fatalln("input wrong port, must be one of 10001, 10002, 10003")

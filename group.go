@@ -73,7 +73,7 @@ func (g *Group) Get(key string) (*ByteView, error) {
 	// 从 lru 中查找
 	val, exist := g.mainCache.get(key)
 	if exist {
-		log.Println("cache is hit")
+		log.Printf("[%v] cache is hit\n", g.peers.Addr())
 		return val, nil
 	}
 	// 缓存中不存在，则去指定的数据源中获取
@@ -87,10 +87,16 @@ func (g *Group) load(key string) (value *ByteView, err error) {
 		// 如果有远程节点，则需要确定这个 key 应该交给哪个节点进行处理（负载均衡）
 		if g.peers != nil {
 			// 确定负责处理这个 key 的节点，如果该节点不是当前节点
-			if peer, ok := g.peers.PickPeer(key); ok {
+			if addr, peer, notSelf := g.peers.PickPeer(key); notSelf {
+				log.Printf("[%v] -> Redirected to key[%v] at %v\n",
+					g.peers.Addr(), key, addr)
 				// 那么就从远程节点获取缓存
 				if value, err := g.getFromPeer(peer, key); err == nil {
 					return value, nil
+				} else {
+					return nil, fmt.Errorf(
+						"[%v]get from peer[%v] error: %v, try to get from local",
+						g.peers.Addr(), addr, err)
 				}
 			}
 		}
@@ -116,7 +122,7 @@ func (g *Group) getFromPeer(peer PeerGetter, key string) (*ByteView, error) {
 
 // getFromLocally 通过调用 g.getter 从本地获得数据，同时添加到缓存
 func (g *Group) getFromLocally(key string) (val *ByteView, err error) {
-	log.Printf("get from locally\n")
+	log.Printf("[%v] get from locally\n", g.peers.Addr())
 	v, err := g.getter.Get(key)
 	if err != nil {
 		return nil, err
