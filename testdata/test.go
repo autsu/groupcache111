@@ -19,7 +19,7 @@ var (
 		"Jack": "589",
 		"Sam":  "567",
 	}
-	getFunc = cache.GetterFunc(
+	getFunc = groupcache.GetterFunc(
 		func(key string) ([]byte, error) {
 			if v, ok := db[key]; ok {
 				return []byte(v), nil
@@ -28,13 +28,13 @@ var (
 		})
 )
 
-func newGroup(name string, size int64, fn cache.Getter) *cache.Group {
-	return cache.NewGroup(name, size, fn)
+func newGroup(name string, size int64, fn groupcache.Getter) *groupcache.Group {
+	return groupcache.NewGroup(name, size, fn)
 }
 
 // 一个缓存服务器
-func startCacheServer(host, port string, peersAddr []string, g *cache.Group) error {
-	pool := cache.NewHTTPPool(host, port)
+func startCacheServer(host, port string, peersAddr []string, g *groupcache.Group) error {
+	pool := groupcache.NewHTTPPool(host, port)
 	pool.Set(peersAddr...)
 	g.RegisterPeers(pool)
 	if err := http.ListenAndServe(fmt.Sprintf("%v:%v", host, port), pool); err != nil {

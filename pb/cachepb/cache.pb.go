@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.26.0
 // 	protoc        v3.19.4
-// source: cache.proto
+// source: groupcache.proto
 
 package cachepb
 
