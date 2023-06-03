@@ -1,4 +1,4 @@
-package cache
+package groupcache
 
 import (
 	"cache/consistenthash"
@@ -14,7 +14,7 @@ import (
 	"sync"
 )
 
-const defaultUrl = "/cache/"
+const defaultUrl = "/groupcache/"
 
 // DefaultReplicas 默认虚拟节点数量
 const DefaultReplicas = 50
@@ -181,7 +181,7 @@ func (h *httpGetter) Get(in *cachepb.Request, out *cachepb.Response) error {
 		h.baseURL,
 		url.QueryEscape(in.Group),
 		url.QueryEscape(in.Key))
-	// 因为 URL 的形式是 scheme://p，所以 p 不能以 '/' 开头
+	// 因为 URL 的形式是 scheme://p，所以 p 不能以 '/' 开头，不然就成了 scheme:///p
 	if p[0] == '/' {
 		p = p[1:]
 	}

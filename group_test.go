@@ -1,4 +1,4 @@
-package cache
+package groupcache
 
 import (
 	"log"
@@ -33,6 +33,6 @@ func TestGroup(t *testing.T) {
 
 	// Output:
 	// 2021/09/28 14:11:50 1
-	// 2021/09/28 14:11:50 cache is hit
+	// 2021/09/28 14:11:50 groupcache is hit
 	// 2021/09/28 14:11:50 1
 }

@@ -1,6 +1,6 @@
-package cache
+package groupcache
 
-// ByteView 保证了数据的只读，
+// ByteView 保证了数据的只读
 type ByteView struct {
 	b []byte
 }
@@ -22,4 +22,3 @@ func cloneBytes(b []byte) []byte {
 	copy(bb, b)
 	return bb
 }
-

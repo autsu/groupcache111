@@ -1,4 +1,4 @@
-package cache
+package groupcache
 
 import (
 	"cache/pb/cachepb"
@@ -73,7 +73,7 @@ func (g *Group) Get(key string) (*ByteView, error) {
 	// 从 lru 中查找
 	val, exist := g.mainCache.get(key)
 	if exist {
-		log.Printf("[%v] cache is hit\n", g.peers.Addr())
+		log.Printf("[%v] groupcache is hit\n", g.peers.Addr())
 		return val, nil
 	}
 	// 缓存中不存在，则去指定的数据源中获取
@@ -93,14 +93,14 @@ func (g *Group) load(key string) (value *ByteView, err error) {
 				// 那么就从远程节点获取缓存
 				if value, err := g.getFromPeer(peer, key); err == nil {
 					return value, nil
-				} else {
-					return nil, fmt.Errorf(
+				} else { // 从远程节点获取缓存失败了，可能是因为远程节点已经挂掉了，此时只做日志记录
+					log.Printf(
 						"[%v]get from peer[%v] error: %v, try to get from local",
 						g.peers.Addr(), addr, err)
 				}
 			}
 		}
-		// 走到这里说明没有远程节点（单机环境），或者负责处理该 key 的就是当前节点，那么由
+		// 走到这里说明没有远程节点（单机环境），或者负责处理该 key 的就是当前节点，或者无法从远程节点获取到缓存，那么由
 		// 当前节点负责，从指定数据源获取数据，并添加到缓存
 		return g.getFromLocally(key)
 	})
