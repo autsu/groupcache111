@@ -1,4 +1,4 @@
-module cache
+module void.io/x/cache
 
 go 1.18
 

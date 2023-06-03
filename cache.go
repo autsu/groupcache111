@@ -1,8 +1,9 @@
 package groupcache
 
 import (
-	"cache/lru"
 	"sync"
+
+	"void.io/x/cache/lru"
 )
 
 // cache 是并发安全的 lru

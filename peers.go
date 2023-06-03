@@ -1,7 +1,7 @@
 package groupcache
 
 import (
-	"cache/pb/cachepb"
+	"void.io/x/cache/pb/cachepb"
 )
 
 // PeerPicker 是一个节点选择器

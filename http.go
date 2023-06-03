@@ -1,10 +1,7 @@
 package groupcache
 
 import (
-	"cache/consistenthash"
-	"cache/pb/cachepb"
 	"fmt"
-	"google.golang.org/protobuf/proto"
 	"io"
 	"log"
 	"net/http"
@@ -12,6 +9,11 @@ import (
 	"path"
 	"strings"
 	"sync"
+
+	"void.io/x/cache/consistenthash"
+	"void.io/x/cache/pb/cachepb"
+
+	"google.golang.org/protobuf/proto"
 )
 
 const defaultUrl = "/groupcache/"

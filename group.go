@@ -1,11 +1,12 @@
 package groupcache
 
 import (
-	"cache/pb/cachepb"
-	"cache/singleflight"
 	"fmt"
 	"log"
 	"sync"
+
+	"void.io/x/cache/pb/cachepb"
+	"void.io/x/cache/singleflight"
 )
 
 // Getter 定义了获取缓存的方式，当缓存不存在时，应当从某处获取数据，并添加到缓存中，
