@@ -1,11 +1,12 @@
 package main
 
 import (
-	"cache"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
+
+	"void.io/x/cache"
 )
 
 func init() {
