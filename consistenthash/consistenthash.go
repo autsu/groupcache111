@@ -57,28 +57,17 @@ func (h *Map) Get(key string) string {
 	// 计算 hash
 	hash := h.hash([]byte(key))
 
-	// 二分查找，找到合适的位置
-	// sort.Search() : 第一个参数用来指定范围区间，为 [0, len(m.keys)]
-	// 返回第一个找到的数的下标
+	// 使用二分查找，找到合适的位置
+	// sort.Search() : 第一个参数 n 用来指定查找的范围区间，即 [0, n)
+	// 返回找到的第一个数所在的下标，如果没找到则返回 n
 	index := sort.Search(len(h.nodes), func(i int) bool {
 		// 查找第一个大于等于 hash(key) 的节点
 		return h.nodes[i] >= hash
 	})
 
-	//
+	// 没找到，则返回第一个节点
 	if index == len(h.nodes) {
 		index = 0
 	}
 	return h.hashMap[h.nodes[index]]
-
-	//【虚拟节点】16 对应【真实节点】6
-	//【虚拟节点】26 对应【真实节点】6
-	//【虚拟节点】24 对应【真实节点】4
-	//【虚拟节点】6 对应【真实节点】6
-	//【虚拟节点】4 对应【真实节点】4
-	//【虚拟节点】14 对应【真实节点】4
-	//【虚拟节点】2 对应【真实节点】2
-	//【虚拟节点】12 对应【真实节点】2
-	//【虚拟节点】22 对应【真实节点】2
-	//return m.hashMap[m.keys[index % len(m.keys)]]
 }
